@@ -1,0 +1,19 @@
+======================================================================
+          RESUME SCREENING REPORT
+======================================================================
+
+Rank               : 1
+Candidate Name     : Arun Kumar
+Match Score        : 60.0%
+Recommendation     : Consider
+
+Matched Skills
+  ✓ Python
+  ✓ Java
+
+Missing Skills
+  ✗ Sql
+  ✗ Machine Learning
+
+----------------------------------------------------------------------
+

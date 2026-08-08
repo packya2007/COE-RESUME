@@ -1,0 +1,19 @@
+Name: Rahul Kumar
+
+Skills:
+Python
+Java
+SQL
+Machine Learning
+
+Experience:
+2 years
+
+Education:
+BTech
+
+Projects:
+Web Development
+
+Certifications:
+AWS

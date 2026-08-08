@@ -1,0 +1,19 @@
+Name: Software Developer
+
+Skills:
+Python
+Java
+SQL
+Machine Learning
+
+Experience:
+2 years
+
+Education:
+BTech
+
+Projects:
+Resume Screening System
+
+Certifications:
+AWS
