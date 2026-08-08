@@ -1,7 +1,3 @@
-# ============================================
-# Resume Screening & Job Description Matching
-# main.py
-# ============================================
 
 from tkinter import *
 from tkinter import ttk
@@ -29,13 +25,10 @@ class ResumeScreeningSystem:
 
         self.root.resizable(False, False)
 
-        # ---------------- Variables ----------------
 
         self.resume_paths = []
 
         self.results = []
-
-        # ---------------- Header ----------------
 
         header = Label(
             self.root,
@@ -48,9 +41,6 @@ class ResumeScreeningSystem:
 
         header.pack(fill=X)
 
-        # =====================================================
-        # LEFT PANEL
-        # =====================================================
 
         left = Frame(
             self.root,
@@ -67,9 +57,6 @@ class ResumeScreeningSystem:
 
         left.pack_propagate(False)
 
-        # =====================================================
-        # JOB DESCRIPTION
-        # =====================================================
 
         jd_frame = LabelFrame(
             left,
@@ -118,9 +105,6 @@ class ResumeScreeningSystem:
             fill=X
         )
 
-        # =====================================================
-        # RESUME UPLOAD
-        # =====================================================
 
         resume_frame = LabelFrame(
             left,
@@ -176,9 +160,6 @@ class ResumeScreeningSystem:
             pady=5
         )
 
-        # =====================================================
-        # CLEAR BUTTON
-        # =====================================================
 
         self.clear_button = Button(
             left,
@@ -195,9 +176,6 @@ class ResumeScreeningSystem:
             pady=5
         )
 
-        # =====================================================
-        # ANALYZE BUTTON
-        # =====================================================
 
         self.analyze_btn = Button(
             left,
@@ -215,9 +193,6 @@ class ResumeScreeningSystem:
             pady=10
         )
 
-        # =====================================================
-        # RIGHT PANEL
-        # =====================================================
 
         right = Frame(
             self.root,
@@ -232,9 +207,6 @@ class ResumeScreeningSystem:
             pady=15
         )
 
-        # =====================================================
-        # RANKING TABLE
-        # =====================================================
 
         table_frame = LabelFrame(
             right,
@@ -317,9 +289,6 @@ class ResumeScreeningSystem:
             self.show_details
         )
 
-        # =====================================================
-        # DETAILS
-        # =====================================================
 
         detail = LabelFrame(
             right,
@@ -347,9 +316,6 @@ class ResumeScreeningSystem:
             expand=True
         )
 
-        # =====================================================
-        # STATUS
-        # =====================================================
 
         self.status = Label(
             self.root,
@@ -364,9 +330,6 @@ class ResumeScreeningSystem:
             side=BOTTOM
         )
 
-    # =========================================================
-    # PARSE TYPED JOB DESCRIPTION
-    # =========================================================
 
     def parse_typed_jd(self, text):
 
@@ -396,7 +359,7 @@ class ResumeScreeningSystem:
 
             lower_line = clean_line.lower()
 
-            # ---------------- Name ----------------
+
 
             if lower_line.startswith("name:"):
 
@@ -410,7 +373,6 @@ class ResumeScreeningSystem:
 
                 continue
 
-            # ---------------- Skills ----------------
 
             if lower_line.startswith("skills:"):
 
@@ -438,7 +400,6 @@ class ResumeScreeningSystem:
 
                 continue
 
-            # ---------------- Experience ----------------
 
             if lower_line.startswith("experience:"):
 
@@ -455,7 +416,6 @@ class ResumeScreeningSystem:
 
                 continue
 
-            # ---------------- Education ----------------
 
             if lower_line.startswith("education:"):
 
@@ -471,8 +431,6 @@ class ResumeScreeningSystem:
                     data["education"] = value
 
                 continue
-
-            # ---------------- Projects ----------------
 
             if lower_line.startswith("projects:"):
 
@@ -491,7 +449,7 @@ class ResumeScreeningSystem:
 
                 continue
 
-            # ---------------- Certifications ----------------
+        
 
             if lower_line.startswith("certifications:"):
 
@@ -510,7 +468,7 @@ class ResumeScreeningSystem:
 
                 continue
 
-            # ---------------- Section Data ----------------
+            
 
             if current_section == "skills":
 
@@ -556,9 +514,7 @@ class ResumeScreeningSystem:
 
         return data
 
-    # =========================================================
-    # UPLOAD RESUMES
-    # =========================================================
+    
 
     def upload_resumes(self):
 
@@ -591,13 +547,10 @@ class ResumeScreeningSystem:
                 ) + " Resume(s) Selected"
             )
 
-    # =========================================================
-    # ANALYZE
-    # =========================================================
+    
 
     def analyze(self):
 
-        # ---------------- Get Typed JD ----------------
 
         jd_text = self.jd_text.get(
             "1.0",
@@ -617,8 +570,6 @@ class ResumeScreeningSystem:
 
             return
 
-        # ---------------- Check Resumes ----------------
-
         if len(self.resume_paths) == 0:
 
             messagebox.showerror(
@@ -628,13 +579,12 @@ class ResumeScreeningSystem:
 
             return
 
-        # ---------------- Parse JD ----------------
+        
 
         jd = self.parse_typed_jd(
             jd_text
         )
 
-        # ---------------- Check JD Skills ----------------
 
         if len(jd["skills"]) == 0:
 
@@ -650,13 +600,11 @@ class ResumeScreeningSystem:
 
         self.results = []
 
-        # ---------------- Analyze Resumes ----------------
 
         for resume_file in self.resume_paths:
 
             try:
 
-                # Import parser only when needed
                 from parser import parse_file
 
                 resume = parse_file(
@@ -686,7 +634,7 @@ class ResumeScreeningSystem:
 
                 return
 
-        # ---------------- Generate Report ----------------
+        
 
         try:
 
@@ -706,14 +654,13 @@ class ResumeScreeningSystem:
                 + str(e)
             )
 
-        # ---------------- Sort Results ----------------
 
         self.results.sort(
             key=lambda x: x["score"],
             reverse=True
         )
 
-        # ---------------- Clear Table ----------------
+
 
         for row in self.table.get_children():
 
@@ -721,7 +668,6 @@ class ResumeScreeningSystem:
                 row
             )
 
-        # ---------------- Display Ranking ----------------
 
         rank = 1
 
@@ -744,7 +690,7 @@ class ResumeScreeningSystem:
 
             rank += 1
 
-        # ---------------- Details Message ----------------
+
 
         self.detail_text.delete(
             "1.0",
@@ -762,7 +708,6 @@ class ResumeScreeningSystem:
             "to view details."
         )
 
-        # ---------------- Status ----------------
 
         self.jd_status.config(
             text="Job Description: Entered",
@@ -780,9 +725,6 @@ class ResumeScreeningSystem:
             "Report saved to output/report.txt"
         )
 
-    # =========================================================
-    # SHOW DETAILS
-    # =========================================================
 
     def show_details(self, event):
 
@@ -889,9 +831,7 @@ class ResumeScreeningSystem:
 
                 break
 
-    # =========================================================
-    # CLEAR
-    # =========================================================
+   
 
     def clear_all(self):
 
@@ -935,9 +875,7 @@ class ResumeScreeningSystem:
         )
 
 
-# ============================================================
-# MAIN
-# ============================================================
+
 
 if __name__ == "__main__":
 
