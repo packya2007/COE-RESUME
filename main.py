@@ -1,10 +1,11 @@
 
+
 from tkinter import *
-from tkinter import ttk
-from tkinter import messagebox
+from tkinter import filedialog, ttk, messagebox
 import os
 import re
 
+from parser import parse_file
 from matcher import calculate_score
 from report import generate_report, save_report
 
@@ -25,10 +26,11 @@ class ResumeScreeningSystem:
 
         self.root.resizable(False, False)
 
+        # ---------------- Variables ----------------
 
         self.resume_paths = []
-
         self.results = []
+
 
         header = Label(
             self.root,
@@ -41,6 +43,8 @@ class ResumeScreeningSystem:
 
         header.pack(fill=X)
 
+  
+  
 
         left = Frame(
             self.root,
@@ -77,9 +81,7 @@ class ResumeScreeningSystem:
             height=12,
             width=38,
             font=("Arial", 9),
-            wrap=WORD,
-            relief=SUNKEN,
-            bd=2
+            wrap=WORD
         )
 
         self.jd_text.pack(
@@ -97,15 +99,12 @@ class ResumeScreeningSystem:
             text="Job Description: Not Entered",
             bg="#F4F7FC",
             fg="#555555",
-            anchor="w",
-            font=("Arial", 9)
+            anchor="w"
         )
 
-        self.jd_status.pack(
-            fill=X
-        )
+        self.jd_status.pack(fill=X)
 
-
+ 
         resume_frame = LabelFrame(
             left,
             text="Resume Upload",
@@ -120,9 +119,7 @@ class ResumeScreeningSystem:
             pady=8
         )
 
-        scrollbar = Scrollbar(
-            resume_frame
-        )
+        scrollbar = Scrollbar(resume_frame)
 
         scrollbar.pack(
             side=RIGHT,
@@ -132,8 +129,8 @@ class ResumeScreeningSystem:
         self.resume_list = Listbox(
             resume_frame,
             height=6,
-            yscrollcommand=scrollbar.set,
-            font=("Arial", 9)
+            font=("Arial", 9),
+            yscrollcommand=scrollbar.set
         )
 
         self.resume_list.pack(
@@ -160,6 +157,7 @@ class ResumeScreeningSystem:
             pady=5
         )
 
+    
 
         self.clear_button = Button(
             left,
@@ -175,6 +173,7 @@ class ResumeScreeningSystem:
             fill=X,
             pady=5
         )
+
 
 
         self.analyze_btn = Button(
@@ -194,6 +193,7 @@ class ResumeScreeningSystem:
         )
 
 
+
         right = Frame(
             self.root,
             bg="#F4F7FC"
@@ -206,6 +206,7 @@ class ResumeScreeningSystem:
             padx=10,
             pady=15
         )
+
 
 
         table_frame = LabelFrame(
@@ -236,21 +237,9 @@ class ResumeScreeningSystem:
             height=12
         )
 
-        self.table.heading(
-            "Rank",
-            text="Rank"
-        )
-
-        self.table.heading(
-            "Candidate",
-            text="Candidate"
-        )
-
-        self.table.heading(
-            "Score",
-            text="Score"
-        )
-
+        self.table.heading("Rank", text="Rank")
+        self.table.heading("Candidate", text="Candidate")
+        self.table.heading("Score", text="Score")
         self.table.heading(
             "Recommendation",
             text="Recommendation"
@@ -290,6 +279,7 @@ class ResumeScreeningSystem:
         )
 
 
+
         detail = LabelFrame(
             right,
             text="Candidate Details",
@@ -316,6 +306,7 @@ class ResumeScreeningSystem:
             expand=True
         )
 
+  
 
         self.status = Label(
             self.root,
@@ -329,6 +320,7 @@ class ResumeScreeningSystem:
             fill=X,
             side=BOTTOM
         )
+
 
 
     def parse_typed_jd(self, text):
@@ -353,36 +345,30 @@ class ResumeScreeningSystem:
             if not line:
                 continue
 
-            clean_line = line.lstrip(
-                "-•*"
-            ).strip()
+            clean_line = line.lstrip("-•*").strip()
 
             lower_line = clean_line.lower()
 
-
+            # ---------------- Name ----------------
 
             if lower_line.startswith("name:"):
 
-                data["name"] = (
-                    clean_line
-                    .split(":", 1)[1]
-                    .strip()
-                )
+                data["name"] = clean_line.split(
+                    ":", 1
+                )[1].strip()
 
                 current_section = None
-
                 continue
 
+            # ---------------- Skills ----------------
 
             if lower_line.startswith("skills:"):
 
                 current_section = "skills"
 
-                value = (
-                    clean_line
-                    .split(":", 1)[1]
-                    .strip()
-                )
+                value = clean_line.split(
+                    ":", 1
+                )[1].strip()
 
                 if value:
 
@@ -394,81 +380,71 @@ class ResumeScreeningSystem:
                         skill = skill.strip()
 
                         if skill:
-                            data["skills"].append(
-                                skill
-                            )
+                            data["skills"].append(skill)
 
                 continue
 
+            # ---------------- Experience ----------------
 
             if lower_line.startswith("experience:"):
 
                 current_section = "experience"
 
-                value = (
-                    clean_line
-                    .split(":", 1)[1]
-                    .strip()
-                )
+                value = clean_line.split(
+                    ":", 1
+                )[1].strip()
 
                 if value:
                     data["experience"] = value
 
                 continue
 
+            # ---------------- Education ----------------
 
             if lower_line.startswith("education:"):
 
                 current_section = "education"
 
-                value = (
-                    clean_line
-                    .split(":", 1)[1]
-                    .strip()
-                )
+                value = clean_line.split(
+                    ":", 1
+                )[1].strip()
 
                 if value:
                     data["education"] = value
 
                 continue
 
+            # ---------------- Projects ----------------
+
             if lower_line.startswith("projects:"):
 
                 current_section = "projects"
 
-                value = (
-                    clean_line
-                    .split(":", 1)[1]
-                    .strip()
-                )
+                value = clean_line.split(
+                    ":", 1
+                )[1].strip()
 
                 if value:
-                    data["projects"].append(
-                        value
-                    )
+                    data["projects"].append(value)
 
                 continue
 
-        
+            # ---------------- Certifications ----------------
 
             if lower_line.startswith("certifications:"):
 
                 current_section = "certifications"
 
-                value = (
-                    clean_line
-                    .split(":", 1)[1]
-                    .strip()
-                )
+                value = clean_line.split(
+                    ":", 1
+                )[1].strip()
 
                 if value:
-                    data["certifications"].append(
-                        value
-                    )
+                    data["certifications"].append(value)
 
                 continue
 
-            
+
 
             if current_section == "skills":
 
@@ -488,9 +464,7 @@ class ResumeScreeningSystem:
                             for x in data["skills"]
                         ]:
 
-                            data["skills"].append(
-                                skill
-                            )
+                            data["skills"].append(skill)
 
             elif current_section == "experience":
 
@@ -502,26 +476,23 @@ class ResumeScreeningSystem:
 
             elif current_section == "projects":
 
-                data["projects"].append(
-                    clean_line
-                )
+                data["projects"].append(clean_line)
 
             elif current_section == "certifications":
 
-                data["certifications"].append(
-                    clean_line
-                )
+                data["certifications"].append(clean_line)
 
         return data
 
-    
+ 
 
     def upload_resumes(self):
 
         paths = filedialog.askopenfilenames(
             title="Select Resume Files",
             filetypes=[
-                ("Text Files", "*.txt")
+                ("Text Files", "*.txt"),
+                ("All Files", "*.*")
             ]
         )
 
@@ -547,10 +518,9 @@ class ResumeScreeningSystem:
                 ) + " Resume(s) Selected"
             )
 
-    
+  
 
     def analyze(self):
-
 
         jd_text = self.jd_text.get(
             "1.0",
@@ -579,19 +549,16 @@ class ResumeScreeningSystem:
 
             return
 
-        
+        # Parse typed Job Description
 
-        jd = self.parse_typed_jd(
-            jd_text
-        )
-
+        jd = self.parse_typed_jd(jd_text)
 
         if len(jd["skills"]) == 0:
 
             messagebox.showwarning(
                 "Warning",
-                "No skills were detected in the Job Description.\n\n"
-                "Please use a format like:\n\n"
+                "No skills detected.\n\n"
+                "Please use:\n\n"
                 "Skills:\n"
                 "Python\n"
                 "Java\n"
@@ -600,12 +567,11 @@ class ResumeScreeningSystem:
 
         self.results = []
 
+        # Analyze each Resume
 
         for resume_file in self.resume_paths:
 
             try:
-
-                from parser import parse_file
 
                 resume = parse_file(
                     resume_file
@@ -616,25 +582,21 @@ class ResumeScreeningSystem:
                     resume
                 )
 
-                self.results.append(
-                    result
-                )
+                self.results.append(result)
 
             except Exception as e:
 
                 messagebox.showerror(
                     "Error",
                     "Error processing:\n"
-                    + os.path.basename(
-                        resume_file
-                    )
+                    + os.path.basename(resume_file)
                     + "\n\n"
                     + str(e)
                 )
 
                 return
 
-        
+        # Generate Report
 
         try:
 
@@ -642,32 +604,31 @@ class ResumeScreeningSystem:
                 self.results
             )
 
-            save_report(
-                report
-            )
+            save_report(report)
 
         except Exception as e:
 
             messagebox.showwarning(
-                "Report Warning",
-                "Analysis completed, but report could not be saved.\n\n"
+                "Warning",
+                "Analysis completed but report "
+                "could not be saved.\n\n"
                 + str(e)
             )
 
+        # Sort Results
 
         self.results.sort(
             key=lambda x: x["score"],
             reverse=True
         )
 
-
+        # Clear Table
 
         for row in self.table.get_children():
 
-            self.table.delete(
-                row
-            )
+            self.table.delete(row)
 
+        # Display Results
 
         rank = 1
 
@@ -679,18 +640,12 @@ class ResumeScreeningSystem:
                 values=(
                     rank,
                     result["candidate"],
-                    str(
-                        result["score"]
-                    ) + "%",
-                    result[
-                        "recommendation"
-                    ]
+                    str(result["score"]) + "%",
+                    result["recommendation"]
                 )
             )
 
             rank += 1
-
-
 
         self.detail_text.delete(
             "1.0",
@@ -700,14 +655,9 @@ class ResumeScreeningSystem:
         self.detail_text.insert(
             END,
             "Analysis Completed Successfully.\n\n"
-        )
-
-        self.detail_text.insert(
-            END,
             "Select a candidate from the table "
             "to view details."
         )
-
 
         self.jd_status.config(
             text="Job Description: Entered",
@@ -720,10 +670,10 @@ class ResumeScreeningSystem:
 
         messagebox.showinfo(
             "Success",
-            "Resume Analysis Completed.\n\n"
-            "Results are displayed in the ranking table.\n\n"
+            "Resume Analysis Completed Successfully.\n\n"
             "Report saved to output/report.txt"
         )
+
 
 
     def show_details(self, event):
@@ -731,7 +681,6 @@ class ResumeScreeningSystem:
         selected = self.table.focus()
 
         if selected == "":
-
             return
 
         values = self.table.item(
@@ -740,7 +689,6 @@ class ResumeScreeningSystem:
         )
 
         if not values:
-
             return
 
         candidate = values[1]
@@ -780,9 +728,7 @@ class ResumeScreeningSystem:
                     "Matched Skills\n"
                 )
 
-                if len(
-                    result["matched_skills"]
-                ) == 0:
+                if len(result["matched_skills"]) == 0:
 
                     self.detail_text.insert(
                         END,
@@ -791,15 +737,11 @@ class ResumeScreeningSystem:
 
                 else:
 
-                    for skill in result[
-                        "matched_skills"
-                    ]:
+                    for skill in result["matched_skills"]:
 
                         self.detail_text.insert(
                             END,
-                            "✓ "
-                            + skill
-                            + "\n"
+                            "✓ " + skill + "\n"
                         )
 
                 self.detail_text.insert(
@@ -807,9 +749,7 @@ class ResumeScreeningSystem:
                     "\nMissing Skills\n"
                 )
 
-                if len(
-                    result["missing_skills"]
-                ) == 0:
+                if len(result["missing_skills"]) == 0:
 
                     self.detail_text.insert(
                         END,
@@ -818,20 +758,16 @@ class ResumeScreeningSystem:
 
                 else:
 
-                    for skill in result[
-                        "missing_skills"
-                    ]:
+                    for skill in result["missing_skills"]:
 
                         self.detail_text.insert(
                             END,
-                            "✗ "
-                            + skill
-                            + "\n"
+                            "✗ " + skill + "\n"
                         )
 
                 break
 
-   
+
 
     def clear_all(self):
 
@@ -859,9 +795,7 @@ class ResumeScreeningSystem:
 
         for row in self.table.get_children():
 
-            self.table.delete(
-                row
-            )
+            self.table.delete(row)
 
         self.detail_text.delete(
             "1.0",
@@ -881,8 +815,6 @@ if __name__ == "__main__":
 
     root = Tk()
 
-    app = ResumeScreeningSystem(
-        root
-    )
+    app = ResumeScreeningSystem(root)
 
     root.mainloop()

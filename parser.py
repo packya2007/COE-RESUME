@@ -2,9 +2,10 @@
 
 def parse_file(file_path):
     """
-    Reads a Job Description or Resume text file
-    and extracts name, skills, experience,
-    education, projects and certifications.
+    Reads a Resume text file and extracts:
+    name, skills, experience, education,
+    projects and certifications.
+    
     """
 
     data = {
@@ -27,7 +28,7 @@ def parse_file(file_path):
             if not line:
                 continue
 
-            # Remove bullets
+            # Remove bullets like -, •, *
             clean_line = line.lstrip("-•*").strip()
 
             lower_line = clean_line.lower()
@@ -37,7 +38,9 @@ def parse_file(file_path):
             if lower_line.startswith("name:"):
 
                 data["name"] = clean_line.split(":", 1)[1].strip()
+
                 current_section = None
+
                 continue
 
             # ---------------- Skills ----------------
@@ -50,15 +53,22 @@ def parse_file(file_path):
 
                 if value:
 
-                    # Handles:
+                    # Supports:
                     # Skills: Python, Java, SQL
 
-                    for skill in value.replace(";", ",").split(","):
+                    parts = value.replace(";", ",").split(",")
+
+                    for skill in parts:
 
                         skill = skill.strip()
 
                         if skill:
-                            data["skills"].append(skill)
+
+                            if skill.lower() not in [
+                                x.lower() for x in data["skills"]
+                            ]:
+
+                                data["skills"].append(skill)
 
                 continue
 
@@ -118,18 +128,21 @@ def parse_file(file_path):
 
             if current_section == "skills":
 
-                # Supports comma-separated skills
+                
+
                 parts = clean_line.replace(";", ",").split(",")
 
                 for skill in parts:
 
                     skill = skill.strip()
 
-                    if skill and skill.lower() not in [
-                        x.lower() for x in data["skills"]
-                    ]:
+                    if skill:
 
-                        data["skills"].append(skill)
+                        if skill.lower() not in [
+                            x.lower() for x in data["skills"]
+                        ]:
+
+                            data["skills"].append(skill)
 
             elif current_section == "experience":
 
